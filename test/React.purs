@@ -6,5 +6,10 @@ import Pux.DOM.HTML (HTML)
 import Pux.Renderer.React (reactClass)
 
 foreign import listComponent :: ∀ props. ReactClass props
+foreign import childrenisArrayFn :: ∀ props. ReactClass props
+
 list :: ∀ ev.  HTML ev -> HTML ev
 list = reactClass listComponent "list"
+
+childrenIsArray :: ∀ ev. HTML ev -> HTML ev
+childrenIsArray = reactClass childrenisArrayFn "isArray"
