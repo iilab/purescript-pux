@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude hiding (div)
 
-import Data.Monoid (mempty)
+import Data.Monoid(mempty)
 
 import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff (Eff)
@@ -15,11 +15,11 @@ import Test.Unit (test)
 import Test.Unit.Assert (equal)
 import Test.Unit.Console (TESTOUTPUT)
 import Test.Unit.Main (runTest)
-import Text.Smolder.HTML (div)
 import Text.Smolder.HTML (div, li)
 import Text.Smolder.Markup (text, (!))
 
-import Test.React (list)
+import Test.React (list, childrenIsArray)
+
 data Event = Noop
 
 type TestEffects = (console :: CONSOLE, testOutput :: TESTOUTPUT, avar:: AVAR)
@@ -86,3 +86,35 @@ main = runTest do
       rendered <- renderToStaticMarkup component.markup
       pure rendered
     equal """<ul></ul>""" result
+
+
+  test "passes children props as array for a single child" $ do
+    result <- liftEff $ do
+      let foldp Noop st = { state: st, effects: []}
+          view _ = childrenIsArray $ do
+            li $ text "1"
+      component <- start
+        { initialState: 0
+        , view
+        , foldp
+        , inputs: []
+        }
+      rendered <- renderToStaticMarkup component.markup
+      pure rendered
+    equal """<div data="true"><li>1</li></div>""" result
+
+  test "passes children props as array for a two children" $ do
+    result <- liftEff $ do
+      let foldp Noop st = { state: st, effects: []}
+          view _ = childrenIsArray $ do
+            li $ text "1"
+            li $ text "2"
+      component <- start
+        { initialState: 0
+        , view
+        , foldp
+        , inputs: []
+        }
+      rendered <- renderToStaticMarkup component.markup
+      pure rendered
+    equal """<div data="true"><li>1</li><li>2</li></div>""" result

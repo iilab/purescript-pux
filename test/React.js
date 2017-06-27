@@ -7,4 +7,10 @@ function list(props) {
   return React.createElement('ul', null, children);
 }
 
+function childrenIsArray(props) {
+  var children = props.children;
+  return React.createElement('div', { data: JSON.stringify(Array.isArray(children)) }, children);
+}
+
 exports.listComponent = list;
+exports.childrenisArrayFn = childrenIsArray;
